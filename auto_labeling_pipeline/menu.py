@@ -81,6 +81,11 @@ Options.register(
     mp.AmazonComprehendEntityTemplate
 )
 Options.register(
+    t.SequenceAndRelationLabeling,
+    mo.AmazonComprehendMedicalEntityRequestModel,
+    mp.AmazonComprehendMedicalEntityTemplate,
+)
+Options.register(
     t.ImageClassification,
     mo.GCPImageLabelDetectionRequestModel,
     mp.GCPImageLabelDetectionTemplate

@@ -144,6 +144,21 @@ class AmazonComprehendRequestModel(AWSMixin, RequestModel):
         raise NotImplementedError('Please use the subclass.')
 
 
+class AmazonComprehendMedicalRequestModel(AWSMixin, RequestModel):
+
+    @property
+    def client(self):
+        return boto3.client(
+            'comprehendmedical',
+            aws_access_key_id=self.aws_access_key,
+            aws_secret_access_key=self.aws_secret_access_key,
+            region_name=self.region_name
+        )
+
+    def send(self, text: str):
+        raise NotImplementedError('Please use the subclass.')
+
+
 class AmazonComprehendSentimentRequestModel(AmazonComprehendRequestModel):
     """
     This allow you to determine the sentiment of a text by
@@ -187,6 +202,34 @@ class AmazonComprehendEntityRequestModel(AmazonComprehendRequestModel):
         response = self.client.detect_entities(
             Text=text,
             LanguageCode=self.language_code
+        )
+        return response
+
+
+class AmazonComprehendMedicalEntityRequestModel(AmazonComprehendMedicalRequestModel):
+    """
+    This allows you to detect medical entities in the text by
+    <a href="https://docs.aws.amazon.com/comprehend-medical/">Amazon Comprehend Medical</a>.
+    """
+
+    class Config:
+        title = 'Amazon Comprehend Medical Entity Recognition'
+        schema_extra = {
+            # https://docs.aws.amazon.com/comprehend-medical/latest/api/API_Attribute.html
+            'types': [
+                'NAME', 'DX_NAME', 'DOSAGE', 'ROUTE_OR_MODE', 'FORM', 'FREQUENCY', 'DURATION', 'GENERIC_NAME',
+                'BRAND_NAME', 'STRENGTH', 'RATE', 'ACUITY', 'TEST_NAME', 'TEST_VALUE', 'TEST_UNITS', 'TEST_UNIT',
+                'PROCEDURE_NAME', 'TREATMENT_NAME', 'DATE', 'AGE', 'CONTACT_POINT', 'PHONE_OR_FAX', 'EMAIL',
+                'IDENTIFIER', 'ID', 'URL', 'ADDRESS', 'PROFESSION', 'SYSTEM_ORGAN_SITE', 'DIRECTION', 'QUALITY',
+                'QUANTITY', 'TIME_EXPRESSION', 'TIME_TO_MEDICATION_NAME', 'TIME_TO_DX_NAME', 'TIME_TO_TEST_NAME',
+                'TIME_TO_PROCEDURE_NAME', 'TIME_TO_TREATMENT_NAME', 'AMOUNT', 'GENDER', 'RACE_ETHNICITY', 'ALLERGIES',
+                'TOBACCO_USE', 'ALCOHOL_CONSUMPTION', 'REC_DRUG_USE'
+            ]
+        }
+
+    def send(self, text: str):
+        response = self.client.detect_entities_v2(
+            Text=text,
         )
         return response
 

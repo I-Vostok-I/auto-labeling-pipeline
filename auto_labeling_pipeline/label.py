@@ -1,5 +1,5 @@
 import abc
-from typing import Dict, Iterable
+from typing import List, Dict, Iterable
 
 from pydantic import BaseModel
 
@@ -58,6 +58,37 @@ class SequenceLabel(Label):
         if self.end_offset <= other.start_offset:
             return False
         return True
+
+
+# Vostok - Start
+class SequenceAndRelLabel(Label):
+    label: str
+    start_offset: int
+    end_offset: int
+    to_id: int
+    relations: List[Dict]
+
+    def included(self, labels: Iterable[str]) -> bool:
+        return self.label in labels
+
+    def replace(self, mapping: Dict[str, str]) -> 'Label':
+        label = mapping.get(self.label, self.label)
+        return SequenceAndRelLabel(
+            label=label,
+            start_offset=self.start_offset,
+            end_offset=self.end_offset,
+            to_id=self.to_id,
+            relations=self.relations
+        )
+
+    def overlap_with(self, other) -> bool:
+        return False
+        # if other.end_offset <= self.start_offset:
+        #     return False
+        # if self.end_offset <= other.start_offset:
+        #     return False
+        # return True
+# Vostok - End
 
 
 class Seq2seqLabel(Label):

@@ -1,0 +1,102 @@
+[
+  {% set ns = namespace(attribute_ids = [], entity_ids = [], traits_id_idx = 0) %}
+  {% for entity in input.Entities %}
+    {% set entityLoop = loop %}
+    {% set _ = ns.entity_ids.append(entity.Id) %}
+    {
+      "label": "{{ entity.Type }}",
+      "start_offset": {{ entity.BeginOffset }},
+      "end_offset": {{ entity.EndOffset }},
+      "to_id": {{ entity.Id }},
+      "relations": [
+      {% if entity.Attributes is defined %}
+      {% for attribute in entity.Attributes %}
+        {
+          "from_id": {{ attribute.Id }},
+          "relation_type": "{{ attribute.RelationshipType }}"
+        }{% if not loop.last %},
+        {% endif %}
+        {% if attribute.Id not in ns.attribute_ids %}
+          {% set _ = ns.attribute_ids.append(attribute.Id) %}
+        {% endif %}
+      {% endfor %}
+      {% endif %}
+
+      ]
+    }{% if not loop.last or entity.Traits|length > 0 %},
+    {% endif %}
+    {% for trait in entity.Traits %}
+    {% set ns.traits_id_idx = ns.traits_id_idx * 1 %}
+    {
+      "label": "{{ trait.Name }}",
+      "start_offset": {{ entity.BeginOffset }},
+      "end_offset": {{ entity.EndOffset }},
+      "to_id": {{ ns.traits_id_idx }},
+      "relations": []
+    }{% if not loop.last or not entityLoop.last %},
+    {% endif %}
+    {% endfor %}
+  {% endfor %}
+  {% set ns.attribute_ids = ns.attribute_ids|unique|list %}
+  {% for id in ns.attribute_ids %}
+    {% if id in ns.entity_ids %}
+      {% set ns.attribute_ids = ns.attribute_ids | reject('equalto', id) %}
+    {% endif %}
+  {% endfor %}
+  {% for entity in input.Entities %}
+    {% if loop.first %},
+    {% endif %}
+    {% if entity.Attributes is defined %}
+      {% for attribute in entity.Attributes %}
+        {% if attribute.Id not in ns.entity_ids %}
+    {
+      "label": "{{ attribute.Type }}",
+      "start_offset": {{ attribute.BeginOffset }},
+      "end_offset": {{ attribute.EndOffset }},
+      "to_id": {{ attribute.Id }},
+      "relations": []
+    }{% set ns.attribute_ids = ns.attribute_ids | reject('equalto', attribute.Id) | list %}
+          {% if ns.attribute_ids|count > 0 or attribute.Traits|length > 0 %},
+          {% endif %}
+          {% set _ = ns.entity_ids.append(attribute.Id) %}
+          {% for trait in attribute.Traits %}
+            {% set ns.traits_id_idx = ns.traits_id_idx - 1 %}
+    {
+      "label": "{{ trait.Name }}",
+      "start_offset": {{ attribute.BeginOffset }},
+      "end_offset": {{ attribute.EndOffset }},
+      "to_id": {{ ns.traits_id_idx }},
+      "relations": []
+    }{% if not loop.last or ns.attribute_ids|count > 0 %},
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% if input.UnmappedAttributes is not none and input.UnmappedAttributes|length > 0  %},
+    {% for UmAttributes in input.UnmappedAttributes %}
+    {% set umEntityLoop = loop %}
+    {
+      "label": "{{ UmAttributes.Type }}",
+      "start_offset": {{ UmAttributes.Attribute.BeginOffset }},
+      "end_offset": {{ UmAttributes.Attribute.EndOffset }},
+      "to_id": {{ UmAttributes.Attribute.Id }},
+      "relations": []
+    }{% if not loop.last or UmAttributes.Traits|length > 0 %},
+      {% endif %}
+      {% for trait in UmAttributes.Traits %}
+        {% set ns.traits_id_idx = ns.traits_id_idx - 1 %}
+    {
+      "label": "{{ trait.Name }}",
+      "start_offset": {{ UmAttributes.BeginOffset }},
+      "end_offset": {{ UmAttributes.EndOffset }},
+      "to_id": {{ ns.traits_id_idx }},
+      "relations": []
+    }{% if not loop.last or not umEntityLoop.last %},
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+
+]

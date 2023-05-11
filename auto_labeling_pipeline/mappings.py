@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Type
 
 from jinja2 import Template
 
-from auto_labeling_pipeline.labels import ClassificationLabels, Labels, Seq2seqLabels, SequenceLabels
+from auto_labeling_pipeline.labels import ClassificationLabels, Labels, Seq2seqLabels, SequenceLabels, SequenceAndRelLabels
 
 TEMPLATE_DIR = pathlib.Path(__file__).parent / 'templates'
 
@@ -52,6 +52,11 @@ class GCPImageLabelDetectionTemplate(MappingTemplate):
 class AmazonComprehendEntityTemplate(MappingTemplate):
     label_collection = SequenceLabels
     template_file = 'amazon_comprehend_entity.jinja2'
+
+
+class AmazonComprehendMedicalEntityTemplate(MappingTemplate):
+    label_collection = SequenceAndRelLabels
+    template_file = 'amazon_comprehend_Medical_entity.jinja2'
 
 
 class GCPEntitiesTemplate(MappingTemplate):
