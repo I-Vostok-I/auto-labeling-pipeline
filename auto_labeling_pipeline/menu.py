@@ -81,7 +81,7 @@ Options.register(
     mp.AmazonComprehendEntityTemplate
 )
 Options.register(
-    t.SequenceAndRelationLabeling,
+    t.SequenceRelationAndTraitLabeling,
     mo.AmazonComprehendMedicalEntityRequestModel,
     mp.AmazonComprehendMedicalEntityTemplate,
 )

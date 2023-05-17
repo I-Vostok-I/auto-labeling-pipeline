@@ -61,24 +61,26 @@ class SequenceLabel(Label):
 
 
 # Vostok - Start
-class SequenceAndRelLabel(Label):
+class SequenceRelAndTraitLabel(Label):
     label: str
     start_offset: int
     end_offset: int
     to_id: int
     relations: List[Dict]
+    traits: List[Dict]
 
     def included(self, labels: Iterable[str]) -> bool:
         return self.label in labels
 
     def replace(self, mapping: Dict[str, str]) -> 'Label':
         label = mapping.get(self.label, self.label)
-        return SequenceAndRelLabel(
+        return SequenceRelAndTraitLabel(
             label=label,
             start_offset=self.start_offset,
             end_offset=self.end_offset,
             to_id=self.to_id,
-            relations=self.relations
+            relations=self.relations,
+            traits=self.traits
         )
 
     def overlap_with(self, other) -> bool:

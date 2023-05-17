@@ -1,7 +1,7 @@
 import abc
 from typing import Type
 
-from auto_labeling_pipeline.labels import ClassificationLabels, Labels, Seq2seqLabels, SequenceLabels, SequenceAndRelLabels
+from auto_labeling_pipeline.labels import ClassificationLabels, Labels, Seq2seqLabels, SequenceLabels, SequenceRelAndTraitLabels
 
 
 class Task(abc.ABC):
@@ -20,8 +20,8 @@ class SequenceLabeling(Task):
     label_collection = SequenceLabels
 
 
-class SequenceAndRelationLabeling(Task):
-    label_collection = SequenceAndRelLabels
+class SequenceRelationAndTraitLabeling(Task):
+    label_collection = SequenceRelAndTraitLabels
 
 
 class Seq2seq(Task):
@@ -43,7 +43,7 @@ class TaskFactory:
         return {
             'DocumentClassification': DocumentClassification,
             'SequenceLabeling': SequenceLabeling,
-            'SequenceAndRelationLabeling': SequenceAndRelationLabeling,
+            'SequenceRelationAndTraitLabeling': SequenceRelationAndTraitLabeling,
             'Seq2seq': Seq2seq,
             'ImageClassification': ImageClassification,
             'Speech2text': SpeechToText

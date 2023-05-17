@@ -2,7 +2,7 @@ import abc
 import operator
 from typing import Dict, Iterable, List, Optional, Type
 
-from auto_labeling_pipeline.label import ClassificationLabel, Label, Seq2seqLabel, SequenceLabel, SequenceAndRelLabel
+from auto_labeling_pipeline.label import ClassificationLabel, Label, Seq2seqLabel, SequenceLabel, SequenceRelAndTraitLabel
 
 
 class Labels(abc.ABC):
@@ -58,8 +58,8 @@ class SequenceLabels(Labels):
 
 
 # Vostok - Start
-class SequenceAndRelLabels(Labels):
-    label_class = SequenceAndRelLabel
+class SequenceRelAndTraitLabels(Labels):
+    label_class = SequenceRelAndTraitLabel
 
     def remove_overlapping(self) -> 'Labels':
         return self
