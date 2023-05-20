@@ -56,7 +56,7 @@ class AmazonComprehendEntityTemplate(MappingTemplate):
 
 class AmazonComprehendMedicalEntityTemplate(MappingTemplate):
     label_collection = SequenceRelAndTraitLabels
-    template_file = 'amazon_comprehend_Medical_entity.jinja2'
+    template_file = 'amazon_comprehend_medical_entity.jinja2'
 
 
 class GCPEntitiesTemplate(MappingTemplate):
