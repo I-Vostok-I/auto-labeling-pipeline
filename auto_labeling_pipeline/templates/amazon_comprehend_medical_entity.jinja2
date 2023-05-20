@@ -43,7 +43,7 @@
     {% endif %}
   {% endfor %}
   {% for entity in input.Entities %}
-    {% if loop.first %},
+    {% if loop.first and entity.Attributes is defined %},
     {% endif %}
     {% if entity.Attributes is defined %}
       {% for attribute in entity.Attributes %}
