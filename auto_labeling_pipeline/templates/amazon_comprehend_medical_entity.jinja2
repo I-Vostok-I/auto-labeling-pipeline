@@ -3,6 +3,9 @@
   {% for entity in input.Entities %}
     {% set entityLoop = loop %}
     {% set _ = ns.entity_ids.append(entity.Id) %}
+    {% if entity.Attributes is defined %}
+      {% set ns.has_attributes = True %}
+    {% endif %}
     {
       "label": "{{ entity.Type }}",
       "start_offset": {{ entity.BeginOffset }},
@@ -43,7 +46,7 @@
     {% endif %}
   {% endfor %}
   {% for entity in input.Entities %}
-    {% if loop.first and entity.Attributes is defined %},
+    {% if loop.first and ns.has_attributes %},
     {% endif %}
     {% if entity.Attributes is defined %}
       {% for attribute in entity.Attributes %}
