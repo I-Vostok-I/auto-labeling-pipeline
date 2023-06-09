@@ -42,7 +42,7 @@
   {% set ns.attribute_ids = ns.attribute_ids|unique|list %}
   {% for id in ns.attribute_ids %}
     {% if id in ns.entity_ids %}
-      {% set ns.attribute_ids = ns.attribute_ids | reject('equalto', id) %}
+      {% set ns.attribute_ids = ns.attribute_ids | reject('equalto', id) | list %}
     {% endif %}
   {% endfor %}
   {% for entity in input.Entities %}
